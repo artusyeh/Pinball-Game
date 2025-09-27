@@ -2,33 +2,48 @@ using UnityEngine;
 
 public class PinballBall : MonoBehaviour
 {
-    //serialize field gives lets me set the variable in the inspector
-    //without having to make that variable public
-    [SerializeField]
-    Rigidbody2D myBody; //var ref to this game object's rigidbody
+    [SerializeField] Rigidbody2D myBody;
+    [SerializeField] GameObject hitParticles;
+    [SerializeField] AudioClip splatSound;
+    private AudioSource audioSource;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //myBody = GetComponent<Rigidbody2D>();
+        // Add an AudioSource on this object
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //if the left mouse button is pressed
         if (Input.GetMouseButtonDown(0))
         {
-            //set the ball's body to dynamic (allow physics forces to act on it)
             myBody.bodyType = RigidbodyType2D.Dynamic;
-            //myBody.linearVelocity = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
         }
     }
 
-    //calls when a collision first occurs
     void OnCollisionEnter2D(Collision2D collision)
     {
-        //check the tag of the game object we collided with
+        if (collision.contacts.Length > 0)
+        {
+            Vector3 hitPos = collision.contacts[0].point;
+            Quaternion hitRot = Quaternion.identity;
+
+            GameObject particles = Instantiate(hitParticles, hitPos, hitRot);
+            Destroy(particles, 1f);
+
+            // Play splat sound at collision
+            if (splatSound != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(splatSound);
+            }
+        }
+
         switch (collision.gameObject.tag)
         {
             case "bumper":
