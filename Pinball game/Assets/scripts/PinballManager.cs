@@ -14,7 +14,7 @@ public class PinballManager : MonoBehaviour
     {
         ballStartPos = ballObj.transform.position;
 
-        // Always start fresh when scene loads
+        //Always start fresh when scene loads
         score = 0;
         UpdateScoreText();
     }
@@ -29,11 +29,11 @@ public class PinballManager : MonoBehaviour
     {
         if (collision.CompareTag("ball"))
         {
-            // Reset score when player dies
+            //Reset score when player dies
             score = 0;
             PlayerPrefs.SetInt("Score", 0);
 
-            // Reload scene
+            //Reload scene
             SceneManager.LoadScene("MainGame");
         }
     }

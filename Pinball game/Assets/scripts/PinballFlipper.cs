@@ -5,7 +5,7 @@ public class PinballFlipper : MonoBehaviour
     [SerializeField] KeyCode flipKey;
     [SerializeField] Rigidbody2D myBody;
     [SerializeField] float flipPower = 800f;
-    [SerializeField] bool invertDirection = false; // toggle for left flipper
+    [SerializeField] bool invertDirection = false; //toggle for left flipper
 
     void Update()
     {
@@ -25,9 +25,9 @@ public class PinballFlipper : MonoBehaviour
 
 
         if (Input.GetKey(flipKey))
-            motor.motorSpeed = direction * flipPower;   // flip up
+            motor.motorSpeed = direction * flipPower;   //flip up
         else
-            motor.motorSpeed = direction * -flipPower * 0.6f; // return down, slower
+            motor.motorSpeed = direction * -flipPower * 0.6f;
 
         hinge.motor = motor;
     }

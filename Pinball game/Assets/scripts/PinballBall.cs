@@ -14,7 +14,7 @@ public class PinballBall : MonoBehaviour
     [SerializeField] float teleportCooldown = 0.5f;
     private bool canTeleport = true;
 
-    private PinballManager pinballManager;  // reference to manager
+    private PinballManager pinballManager;  //reference to manager
 
     void Start()
     {
