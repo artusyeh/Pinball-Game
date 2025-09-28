@@ -9,6 +9,7 @@ TagManager:
   - Tp_1
   - Tp_2
   - Tp_3
+  - score
   layers:
   - Default
   - TransparentFX

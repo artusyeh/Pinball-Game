@@ -7,24 +7,26 @@ public class PinballBall : MonoBehaviour
     [SerializeField] AudioClip splatSound;
     private AudioSource audioSource;
 
-    // References to teleport points
     [SerializeField] Transform tp1;
     [SerializeField] Transform tp2;
+    [SerializeField] Transform tp3;
 
-    // Teleport cooldown
-    [SerializeField] float teleportCooldown = 0.5f; // half a second
+    [SerializeField] float teleportCooldown = 0.5f;
     private bool canTeleport = true;
+
+    private PinballManager pinballManager;  // reference to manager
 
     void Start()
     {
-        // Add an AudioSource on this object
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-
         audioSource.playOnAwake = false;
+
+        pinballManager = FindAnyObjectByType<PinballManager>();
+
     }
 
     void Update()
@@ -45,11 +47,17 @@ public class PinballBall : MonoBehaviour
             GameObject particles = Instantiate(hitParticles, hitPos, hitRot);
             Destroy(particles, 1f);
 
-            // Play splat sound at collision
             if (splatSound != null && audioSource != null)
             {
                 audioSource.PlayOneShot(splatSound);
             }
+        }
+        
+        DistanceJoint2D joint = collision.gameObject.GetComponent<DistanceJoint2D>();
+        if (joint != null)
+        {
+            joint.enabled = false;
+            Debug.Log("Disabled DistanceJoint2D on " + collision.gameObject.name);
         }
 
         switch (collision.gameObject.tag)
@@ -60,6 +68,12 @@ public class PinballBall : MonoBehaviour
             case "flipper":
                 myBody.AddForce(collision.contacts[0].normal * 500);
                 break;
+            case "score":
+                if (pinballManager != null)
+                {
+                    pinballManager.AddScore();
+                }
+                break;
             default:
                 break;
         }
@@ -67,7 +81,7 @@ public class PinballBall : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (!canTeleport) return; // ignore if on cooldown
+        if (!canTeleport) return;
 
         if (other.CompareTag("Tp_2"))
         {
@@ -77,15 +91,18 @@ public class PinballBall : MonoBehaviour
         {
             TeleportBall(tp2.position);
         }
+        else if (other.CompareTag("Tp_3"))
+        {
+            TeleportBall(tp2.position);
+        }
     }
 
     private void TeleportBall(Vector3 targetPos)
     {
-        Vector2 savedVelocity = myBody.linearVelocity;   // store velocity
-        myBody.position = targetPos;               // move ball
-        myBody.linearVelocity = savedVelocity;           // restore velocity
+        Vector2 savedVelocity = myBody.linearVelocity;
+        myBody.position = targetPos;
+        myBody.linearVelocity = savedVelocity;
 
-        // Start cooldown
         canTeleport = false;
         Invoke(nameof(ResetTeleport), teleportCooldown);
     }
