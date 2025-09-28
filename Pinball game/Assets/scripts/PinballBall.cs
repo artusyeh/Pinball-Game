@@ -7,6 +7,14 @@ public class PinballBall : MonoBehaviour
     [SerializeField] AudioClip splatSound;
     private AudioSource audioSource;
 
+    // References to teleport points
+    [SerializeField] Transform tp1;
+    [SerializeField] Transform tp2;
+
+    // Teleport cooldown
+    [SerializeField] float teleportCooldown = 0.5f; // half a second
+    private bool canTeleport = true;
+
     void Start()
     {
         // Add an AudioSource on this object
@@ -55,5 +63,35 @@ public class PinballBall : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!canTeleport) return; // ignore if on cooldown
+
+        if (other.CompareTag("Tp_2"))
+        {
+            TeleportBall(tp1.position);
+        }
+        else if (other.CompareTag("Tp_1"))
+        {
+            TeleportBall(tp2.position);
+        }
+    }
+
+    private void TeleportBall(Vector3 targetPos)
+    {
+        Vector2 savedVelocity = myBody.linearVelocity;   // store velocity
+        myBody.position = targetPos;               // move ball
+        myBody.linearVelocity = savedVelocity;           // restore velocity
+
+        // Start cooldown
+        canTeleport = false;
+        Invoke(nameof(ResetTeleport), teleportCooldown);
+    }
+
+    private void ResetTeleport()
+    {
+        canTeleport = true;
     }
 }

@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - ball
+  - Tp
+  - Tp_1
+  - Tp_2
+  - Tp_3
   layers:
   - Default
   - TransparentFX
