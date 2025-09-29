@@ -8,4 +8,6 @@ implemented functional tunnels for the ball, adding more variety and flow to mov
 there’s still room for improvement. UI contrast, particularly with the score display, needs adjustment, and additional sound effects could 
 amplify immersion even further. Overall really happy with the results.
 
+Controls: A and D for flippers. Spacebar to launch.
+
 
